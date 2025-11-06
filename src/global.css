@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+@layer components {
+    .btn,
+    .btn-other,
+    .btn-with-bg {
+        @apply block cursor-pointer px-3 py-2 rounded;
+    }
+
+    .btn {
+        @apply bg-teal-500 hover:bg-teal-600;
+    }
+
+    .btn-other {
+        @apply border hover:border-neutral-500;
+    }
+
+    .btn-with-bg {
+        @apply w-full rounded-none hover:bg-neutral-700;
+    }
+
+    .btn-icon {
+        @apply cursor-pointer mx-1 hover:bg-neutral-700 rounded-xl p-1;
+    }
+
+    * {
+        @apply border-neutral-700;
+    }
+
+    input {
+        @apply px-2 py-1 bg-neutral-900 w-full border;
+    }
+}
