@@ -87,7 +87,8 @@ const ProjectEditor: React.FC<Props> = (props) => {
                 <Panel title="Piano Roll" open={openFor != null} onClose={() => setOpenFor(null)}>
                     <PianoRoll
                         {...openFor}
-                        {...{ playheadTick, setProject, project, onClickSetPlayhead }}
+                        {...{ playheadTick, project, onClickSetPlayhead }}
+                        setProject={updateProject}
                     />
                 </Panel>
                 <footer className="h-10 bg-neutral-800 border-t flex justify-between items-center px-4 relative z-30">
