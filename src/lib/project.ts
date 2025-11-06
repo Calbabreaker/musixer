@@ -44,6 +44,8 @@ export interface Project {
     time_signature: [number, number];
 }
 
+const SAMPLE_PATH = `${import.meta.env.BASE_URL}samples`;
+
 export const INSTRUMENTS: Record<InstrumentName, Tone.PolySynth> = {
     fatsine: new Tone.PolySynth(Tone.Synth, {
         oscillator: {
@@ -68,7 +70,7 @@ export const INSTRUMENTS: Record<InstrumentName, Tone.PolySynth> = {
         },
         volume: 20,
         release: 20,
-        baseUrl: "/samples/drums/",
+        baseUrl: `${SAMPLE_PATH}/drums/`,
     }) as any,
     flute: new Tone.Sampler({
         urls: {
@@ -78,7 +80,7 @@ export const INSTRUMENTS: Record<InstrumentName, Tone.PolySynth> = {
             F4: "F4.ogg",
         },
         release: "1s",
-        baseUrl: "/samples/flute/",
+        baseUrl: `${SAMPLE_PATH}/flute/`,
     }) as any,
     violin: new Tone.Sampler({
         urls: {
@@ -88,7 +90,7 @@ export const INSTRUMENTS: Record<InstrumentName, Tone.PolySynth> = {
             G4: "G4.ogg",
         },
         release: "1s",
-        baseUrl: "/samples/violin/",
+        baseUrl: `${SAMPLE_PATH}/violin/`,
     }) as any,
     trumpet: new Tone.Sampler({
         urls: {
@@ -98,12 +100,12 @@ export const INSTRUMENTS: Record<InstrumentName, Tone.PolySynth> = {
             G4: "G4.ogg",
         },
         release: "1s",
-        baseUrl: "/samples/trumpet/",
+        baseUrl: `${SAMPLE_PATH}/trumpet/`,
     }) as any,
     piano: new Tone.Sampler({
         urls: { A4: "A4.ogg", C4: "C4.ogg", "D#4": "Ds4.ogg", "F#4": "Fs4.ogg" },
         release: "1s",
-        baseUrl: "/samples/piano/",
+        baseUrl: `${SAMPLE_PATH}/piano/`,
     }) as any,
 };
 

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { ticksToPixel, xPosToTicks, type TimelineZoom } from "../../lib/timing";
 import { CustomContextMenuContext } from "../CustomContextMenu";
-import { faCopy, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faBoxOpen, faCopy, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { ClipboardContext, useDrag } from "../../lib/utils";
 import { MIN_DURATION } from "../../lib/project";
 
@@ -15,10 +15,11 @@ interface Props<T extends TickObject = any> extends React.ComponentProps<"div"> 
     setTickObject: (newObject: T | null) => void;
     timeSignature: [number, number];
     zoom: TimelineZoom;
+    onOpen?: () => void;
 }
 
 export const DraggableTickObject: React.FC<React.PropsWithChildren<Props>> = (props) => {
-    const { tickObject, setTickObject, zoom, timeSignature, ...otherProps } = props;
+    const { tickObject, setTickObject, zoom, timeSignature, onOpen, ...otherProps } = props;
 
     const centerDragOffset = useRef(0);
     const { setMenuButtons } = useContext(CustomContextMenuContext);
@@ -67,10 +68,14 @@ export const DraggableTickObject: React.FC<React.PropsWithChildren<Props>> = (pr
     function onContextMenu(e: React.MouseEvent) {
         e.preventDefault();
         e.stopPropagation();
-        setMenuButtons([
+        const buttons = [
             { icon: faCopy, text: "Copy", onClick: () => setContents(tickObject) },
             { icon: faTrash, text: "Delete", onClick: () => setTickObject(null) },
-        ]);
+        ];
+        if (onOpen) {
+            buttons.unshift({ icon: faBoxOpen, text: "Open", onClick: () => onOpen() });
+        }
+        setMenuButtons(buttons);
     }
 
     if (left + width > 0) {
@@ -80,6 +85,14 @@ export const DraggableTickObject: React.FC<React.PropsWithChildren<Props>> = (pr
                 className={`absolute h-full flex bg-blue-500 rounded w-fit border-2 border-blue-400 ${props.className}`}
                 style={{ left: `${left}px`, width: `${width}px` }}
                 onContextMenu={onContextMenu}
+                onClick={(e) => {
+                    if (onOpen) {
+                        e.stopPropagation();
+                        if (e.detail == 2) {
+                            onOpen();
+                        }
+                    }
+                }}
             >
                 <div className="absolute size-full grid place-items-center pointer-events-none select-none overflow-hidden">
                     {props.children}

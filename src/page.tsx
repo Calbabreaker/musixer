@@ -1,22 +1,21 @@
-import { useState } from "react";
-import { NavBar } from "../NavBar";
-import { ProjectList } from "../ProjectList";
-import { apiCreateProject } from "../../lib/localstorage";
-import { useNavigate } from "react-router";
+import { StrictMode, useState } from "react";
+import { NavBar } from "@/components/NavBar";
+import { ProjectList } from "@/components/ProjectList";
+import { App } from "./App";
+import { apiCreateProject, apiGetProjects } from "@/lib/localstorage";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { createRoot } from "react-dom/client";
+import { Loader } from "@/components/Loader";
 
-interface Props {}
-
-export const Dashboard: React.FC<Props> = ({}) => {
+const Dashboard: React.FC = () => {
     const [creating, setCreating] = useState(false);
-    const navigate = useNavigate();
 
     async function onClick() {
         try {
             setCreating(true);
             const project = await apiCreateProject();
-            navigate(`/project/${project.id}`);
+            location.href = `${import.meta.env.BASE_URL}project/?id=${project.id}`;
         } catch (err) {
             console.error(err);
             alert("Failed to create project :(");
@@ -36,8 +35,19 @@ export const Dashboard: React.FC<Props> = ({}) => {
                         {creating ? "Creating..." : "New Project"}
                     </button>
                 </div>
-                <ProjectList />
+                <Loader
+                    load={() => apiGetProjects()}
+                    render={(projects) => <ProjectList projects={projects} />}
+                />
             </main>
         </>
     );
 };
+
+createRoot(document.body).render(
+    <StrictMode>
+        <App>
+            <Dashboard />
+        </App>
+    </StrictMode>,
+);

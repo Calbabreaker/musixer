@@ -14,7 +14,7 @@ jobs:
               run: npm install -g pnpm
 
             - name: Build project
-              run: pnpm install && pnpm build
+              run: pnpm install && pnpm build --base /musixer/
 
             - name: Push to github pages
               uses: s0/git-publish-subdir-action@develop

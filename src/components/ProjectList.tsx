@@ -1,4 +1,3 @@
-import { Link, useLoaderData, useNavigate } from "react-router";
 import type { Project, Track } from "../lib/project";
 import { useContext, useState } from "react";
 import { apiDeleteProject } from "../lib/localstorage";
@@ -6,10 +5,13 @@ import { CustomContextMenuContext } from "./CustomContextMenu";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisV, faFile, faTrash } from "@fortawesome/free-solid-svg-icons";
 
-export const ProjectList: React.FC = ({}) => {
-    const [projects, setProjects] = useState<Project[]>(useLoaderData().projects);
+interface Props {
+    projects: Project[];
+}
+
+export const ProjectList: React.FC<Props> = (props) => {
+    const [projects, setProjects] = useState<Project[]>(props.projects);
     const { setMenuButtons } = useContext(CustomContextMenuContext);
-    const navigate = useNavigate();
 
     async function deleteProject(id: string) {
         if (confirm("Really delete this project?")) {
@@ -25,7 +27,11 @@ export const ProjectList: React.FC = ({}) => {
     function openContextMenu(e: React.MouseEvent, id: string) {
         e.preventDefault();
         setMenuButtons([
-            { icon: faFile, text: "Open", onClick: () => navigate(`/project/${id}`) },
+            {
+                icon: faFile,
+                text: "Open",
+                onClick: () => (location.href = `${import.meta.env.BASE_URL}project/?id=${id}`),
+            },
             { icon: faTrash, text: "Delete", onClick: () => deleteProject(id) },
         ]);
     }
@@ -38,9 +44,12 @@ export const ProjectList: React.FC = ({}) => {
                     key={id}
                     onContextMenu={(e) => openContextMenu(e, id)}
                 >
-                    <Link className="text-2xl w-96 hover:underline" to={`/project/${id}`}>
+                    <a
+                        className="text-2xl w-96 hover:underline"
+                        href={`${import.meta.env.BASE_URL}project/?id=${id}`}
+                    >
                         {name}
-                    </Link>
+                    </a>
                     <p className="grow">{description}</p>
                     <div className="flex gap-4 items-center">
                         <div className="text-sm text-neutral-400">

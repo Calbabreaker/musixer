@@ -1,13 +1,13 @@
-import { Outlet } from "react-router";
 import { useState } from "react";
 import {
     CustomContextMenu,
     CustomContextMenuContext,
     type ContextMenuButton,
-} from "./components/CustomContextMenu";
-import { ClipboardContext } from "./lib/utils";
+} from "@/components/CustomContextMenu";
+import { ClipboardContext } from "@/lib/utils";
+import "./global.css";
 
-function App() {
+export const App: React.FC<React.PropsWithChildren> = ({ children }) => {
     const [buttons, setMenuButtons] = useState<ContextMenuButton[] | null>(null);
     const [contents, setContents] = useState<any>();
 
@@ -16,15 +16,13 @@ function App() {
             value={{
                 contents,
                 // Make sure to deep copy the contents
-                setContents: (contents) => setContents(JSON.parse(JSON.stringify(contents))),
+                setContents: (contents) => setContents(structuredClone(contents)),
             }}
         >
             <CustomContextMenu buttons={buttons} onClose={() => setMenuButtons(null)} />
             <CustomContextMenuContext.Provider value={{ setMenuButtons }}>
-                <Outlet />
+                {children}
             </CustomContextMenuContext.Provider>
         </ClipboardContext.Provider>
     );
-}
-
-export default App;
+};

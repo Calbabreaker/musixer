@@ -1,26 +1,27 @@
-import { useEffect, useState } from "react";
-import { useLoaderData } from "react-router";
-import {
-    TIMELINE_LEFT_OFFSET,
-    wheelNewZoom,
-    xPosToTicks,
-    type TimelineZoom,
-} from "../../lib/timing";
-import { NavBar } from "../NavBar";
-import { apiSaveProject } from "../../lib/localstorage";
-import { TimelineLines, TimelineRuler } from "../editor/TimelineRuler";
-import { TrackListView } from "../editor/TrackListView";
-import { PlayControls } from "../editor/PlayControls";
-import type { Project } from "../../lib/project";
-import { Playhead } from "../editor/Playhead";
-import { ProjectTimeControls } from "../editor/ProjectTimeControls";
-import { usePromiseLock } from "../../lib/utils";
-import { EditableText } from "../EditableText";
-import { Panel } from "../Panel";
-import { PianoRoll, PianoRollContext, type PianoRollOpenFor } from "../editor/PianoRoll";
+import { StrictMode, useEffect, useState } from "react";
+import { TIMELINE_LEFT_OFFSET, wheelNewZoom, xPosToTicks, type TimelineZoom } from "@/lib/timing";
+import { NavBar } from "@/components/NavBar";
+import { apiGetProject, apiSaveProject } from "@/lib/localstorage";
+import { TimelineLines, TimelineRuler } from "@/components/editor/TimelineRuler";
+import { TrackListView } from "@/components/editor/TrackListView";
+import { PlayControls } from "@/components/editor/PlayControls";
+import type { Project } from "@/lib/project";
+import { Playhead } from "@/components/editor/Playhead";
+import { ProjectTimeControls } from "@/components/editor/ProjectTimeControls";
+import { usePromiseLock } from "@/lib/utils";
+import { EditableText } from "@/components/EditableText";
+import { Panel } from "@/components/Panel";
+import { PianoRoll, PianoRollContext, type PianoRollOpenFor } from "@/components/editor/PianoRoll";
+import { createRoot } from "react-dom/client";
+import { App } from "../App";
+import { Loader } from "@/components/Loader";
 
-export const ProjectEditor: React.FC = ({}) => {
-    const [project, setProject] = useState<Project>(useLoaderData().project);
+interface Props {
+    project: Project;
+}
+
+const ProjectEditor: React.FC<Props> = (props) => {
+    const [project, setProject] = useState<Project>(props.project);
     const [savingText, setSavingText] = useState("");
     const [zoom, setZoom] = useState<TimelineZoom>({ startTick: 0, ticksPerPixel: 10 });
     const [playing, setPlaying] = useState(false);
@@ -99,3 +100,14 @@ export const ProjectEditor: React.FC = ({}) => {
         </div>
     );
 };
+
+createRoot(document.body).render(
+    <StrictMode>
+        <App>
+            <Loader
+                load={() => apiGetProject(new URLSearchParams(location.search).get("id") || "")}
+                render={(project) => <ProjectEditor project={project} />}
+            />
+        </App>
+    </StrictMode>,
+);

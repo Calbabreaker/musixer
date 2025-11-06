@@ -122,12 +122,7 @@ export const TrackTimeline: React.FC<Props> = ({ trackIndex, setTrack, project, 
                     setTickObject={(part) => updatePart(i, part)}
                     zoom={zoom}
                     timeSignature={project.time_signature}
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        if (e.detail == 2) {
-                            setOpenFor({ partIndex: i, trackIndex });
-                        }
-                    }}
+                    onOpen={() => setOpenFor({ partIndex: i, trackIndex })}
                     className={`${openFor?.trackIndex == trackIndex && openFor?.partIndex == i ? "border-white" : ""}`}
                 >
                     {part.notes?.length} notes
